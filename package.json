@@ -1,0 +1,42 @@
+{
+  "name": "vip-hopon",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VIP HopOn MVP: book from home, hop on, they watch you arrive.",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c red,yellow \"node --watch server/index.ts\" \"vite\"",
+    "dev:phone": "concurrently -k -n api,web -c red,yellow \"node --watch server/index.ts\" \"vite --mode phone\"",
+    "build": "vite build",
+    "start": "node server/index.ts",
+    "reset": "node server/reset.ts",
+    "test:e2e": "node scripts/e2e.mjs"
+  },
+  "engines": {
+    "node": ">=22.18"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "0.5.14",
+    "express": "4.21.2",
+    "html5-qrcode": "2.3.8",
+    "leaflet": "1.9.4",
+    "pg": "8.23.1",
+    "qrcode": "1.5.4",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router-dom": "6.28.0",
+    "socket.io": "4.8.1",
+    "socket.io-client": "4.8.1"
+  },
+  "devDependencies": {
+    "@types/leaflet": "1.9.14",
+    "@types/qrcode": "1.5.5",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-basic-ssl": "^1.2.0",
+    "@vitejs/plugin-react": "4.3.4",
+    "concurrently": "9.1.0",
+    "typescript": "5.6.3",
+    "vite": "5.4.11"
+  }
+}

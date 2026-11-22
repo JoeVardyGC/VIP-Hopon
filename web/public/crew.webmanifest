@@ -1,0 +1,18 @@
+{
+  "id": "/crew",
+  "name": "VIP HopOn Crew",
+  "short_name": "HopOn Crew",
+  "description": "For VIP conductors, drivers and terminal managers: scan tickets, sell walk-in seats, start and end trips.",
+  "start_url": "/crew?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1F1416",
+  "theme_color": "#1F1416",
+  "categories": ["business", "travel"],
+  "icons": [
+    { "src": "/icons/crew-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/crew-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/crew-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

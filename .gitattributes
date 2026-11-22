@@ -1,0 +1,4 @@
+# Keep Unix line endings in the repo so Render/Netlify (Linux) build the same files.
+* text=auto eol=lf
+*.png binary
+*.woff2 binary

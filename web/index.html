@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#B3122E" />
+  <meta name="description" content="Book VIP buses from home, hop on, and let family follow your trip live." />
+  <link rel="manifest" id="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="HopOn" />
+  <script>
+    // Crew pages install as a separate "HopOn Crew" app with its own icon and name.
+    if (location.pathname.startsWith('/crew')) {
+      document.getElementById('manifest').href = '/crew.webmanifest';
+      document.querySelector('meta[name="theme-color"]').content = '#1F1416';
+      document.querySelector('meta[name="apple-mobile-web-app-title"]').content = 'HopOn Crew';
+      document.querySelector('link[rel="apple-touch-icon"]').href = '/icons/crew-192.png';
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <title>VIP HopOn</title>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+</html>

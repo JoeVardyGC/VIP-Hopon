@@ -1,0 +1,46 @@
+# Render blueprint for the VIP HopOn server (free web service).
+# Render reads this when you choose New > Blueprint and pick this repository.
+# Settings marked "sync: false" are asked for once during setup and never stored in the code.
+services:
+  - type: web
+    name: vip-hopon-api
+    runtime: node
+    plan: free
+    region: frankfurt # closest Render region to Ghana
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/config
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NODE_ENV
+        value: production
+      # Neon connection string, e.g. postgresql://user:password@ep-xxx.eu-central-1.aws.neon.tech/neondb?sslmode=require
+      - key: DATABASE_URL
+        sync: false
+      # Your Netlify address, e.g. https://vip-hopon.netlify.app (used in SMS and share links)
+      - key: PUBLIC_URL
+        sync: false
+      # Sites allowed to call this server from a browser: your Netlify address (comma-separate several)
+      - key: CORS_ORIGIN
+        sync: false
+      # First manager (Staff ID VIP-M9001). They issue every other Staff ID from the dashboard.
+      - key: FIRST_MANAGER_PHONE
+        sync: false
+      - key: FIRST_MANAGER_PIN
+        sync: false
+      - key: FIRST_MANAGER_NAME
+        sync: false
+      # Closed trial: phone numbers allowed to get a login code, comma separated (0241234567,0551234567)
+      - key: TEST_PHONES
+        sync: false
+      # Trial switches
+      - key: OTP_MODE
+        value: screen # show login codes on screen; change to "sms" once an SMS provider is set up
+      - key: TEST_MODE
+        value: "true" # shows "Test mode" buttons (check in without location, demo drive)
+      - key: HUBTEL_MODE
+        value: mock # test checkout; "live" needs Hubtel keys
+      # Optional real SMS (leave empty for the trial): arkesel | hubtel | mnotify, plus that provider's key and SMS_SENDER
+      - key: SMS_PROVIDER
+        sync: false
