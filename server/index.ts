@@ -266,7 +266,12 @@ app.post('/api/crew/login', h(async (req) => {
   limit(`login-ip:${req.ip}`, 30, 600_000, 'Too many sign-in attempts. Wait a few minutes.');
   const raw = String(req.body.id ?? req.body.staffId ?? req.body.phone ?? '');
   const phone = normPhone(raw);
-  const c = phone ? await one<any>('SELECT * FROM crew WHERE phone = ?', phone) : await one<any>('SELECT * FROM crew WHERE staff_id = ?', normStaffId(raw));
+  let c: any;
+  if (phone) {
+    const rows = await all<any>('SELECT * FROM crew WHERE phone = ?', phone);
+    if (rows.length > 1) fail(400, 'This number has more than one Staff ID (conductor and driver). Sign in with the Staff ID for the job you are doing now.');
+    c = rows[0];
+  } else c = await one<any>('SELECT * FROM crew WHERE staff_id = ?', normStaffId(raw));
   const nope = () => fail(401, 'Staff ID or PIN not recognised');
   if (!c) return nope();
   if (!c.active) fail(403, 'This Staff ID has been switched off. Speak to your terminal manager.');
@@ -844,7 +849,14 @@ app.post('/api/ops/crew', h(async (req) => {
   const name = String(req.body.name || '').trim().slice(0, 60) || fail(400, 'Add the full name as on their VIP ID');
   const phone = normPhone(req.body.phone) ?? fail(400, 'Add a Ghana phone number');
   const role = ['conductor', 'driver', 'manager'].includes(req.body.role) ? req.body.role : fail(400, 'Pick a role');
-  if (await one('SELECT 1 FROM crew WHERE phone = ?', phone)) fail(409, 'That phone number already has a Staff ID');
+  // A person who works as both conductor and driver gets two Staff IDs on the same phone.
+  // Anything else sharing a number (two IDs with the same role, or a manager) is refused.
+  const same = await all<any>('SELECT staff_id, name, role FROM crew WHERE phone = ?', phone);
+  const dupe = same.find((c) => c.role === role);
+  if (dupe) fail(409, `That phone number already has a ${role} Staff ID (${dupe.staff_id}, ${dupe.name})`);
+  if (same.length && (role === 'manager' || same.some((c) => !['conductor', 'driver'].includes(c.role)))) {
+    fail(409, `That phone number already has a Staff ID (${same[0].staff_id}, ${same[0].name}). Only a conductor and a driver ID can share one number.`);
+  }
   const base = { conductor: 1000, driver: 2000, manager: 9000 }[role as 'conductor' | 'driver' | 'manager'];
   const n = (await one<{ n: number }>('SELECT COUNT(*) AS n FROM crew WHERE role = ?', role))!.n;
   let k = n + 1, staffId = staffIdFor(role, base + k);

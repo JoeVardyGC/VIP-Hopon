@@ -168,6 +168,7 @@ function CrewPanel() {
         <label className="field"><span>Role</span><select className="input" value={f.role} onChange={(e) => setF({ ...f, role: e.target.value })}><option value="conductor">Conductor</option><option value="driver">Driver</option><option value="manager">Terminal manager</option></select></label>
         <button className="btn btn-g" disabled={a.busy} style={{ alignSelf: 'end' }}><Icon n="badge" size="s" />Issue Staff ID</button>
       </form>
+      <p style={{ margin: 0, fontSize: 13, color: 'var(--mut)' }}>Each person needs their own phone number. Someone who works as both conductor and driver can get one ID for each job on the same number.</p>
       <Err e={a.error} />
       {slip && (
         <div className="issue-slip" role="status">
