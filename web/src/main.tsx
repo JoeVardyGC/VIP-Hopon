@@ -1,12 +1,18 @@
 import { StrictMode, Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import './styles.css';
 import './screens.css';
 import { PassengerApp, SignIn, Home, Board, Pay, Tickets, TicketDetail, LiveTrip, LiveTripIndex, Track } from './passenger';
-import { registerServiceWorker } from './install';
+import { registerServiceWorker, InstallPrompt } from './install';
 
 registerServiceWorker();
+
+// Asks phone visitors to install the app (passenger app, or the crew app under /crew).
+function Install() {
+  const { pathname } = useLocation();
+  return <InstallPrompt key={pathname.startsWith('/crew') ? 'crew' : 'app'} path={pathname} app={pathname.startsWith('/crew') ? 'HopOn Crew' : 'VIP HopOn'} />;
+}
 
 // Crew and ops screens load separately so passengers on weak data never download them.
 const CrewApp = lazy(() => import('./crew').then((m) => ({ default: m.CrewApp })));
@@ -31,6 +37,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/ops" element={<Suspense fallback={<div className="ops" />}><Ops /></Suspense>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <Install />
     </BrowserRouter>
   </StrictMode>,
 );
