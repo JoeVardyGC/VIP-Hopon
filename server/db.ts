@@ -91,7 +91,15 @@ CREATE INDEX IF NOT EXISTS locations_trip ON locations (trip_id, at);
 
 /** Connect, create tables if needed. Call once before the server starts. */
 export async function initDb() {
+  // Online, never fall back to the built-in PGlite: it needs far more memory than a free server has
+  // (Render's free plan runs out at 512 MB) and its data would vanish on every restart.
+  if (!process.env.DATABASE_URL && process.env.NODE_ENV === 'production' && process.env.ALLOW_PGLITE !== 'true') {
+    throw new Error('DATABASE_URL is not set. On Render: open the service > Environment > add DATABASE_URL with your Neon connection string, then Save (Render restarts by itself).');
+  }
   if (process.env.DATABASE_URL) {
+    if (!/^postgres(ql)?:\/\//.test(process.env.DATABASE_URL.trim())) {
+      throw new Error('DATABASE_URL does not look like a PostgreSQL address. It should start with postgresql:// (copy it from Neon > Connect).');
+    }
     const pg = (await import('pg')).default;
     // COUNT/SUM come back as 64-bit numbers; read them as JS numbers.
     pg.types.setTypeParser(20, (v: string) => parseInt(v, 10));
